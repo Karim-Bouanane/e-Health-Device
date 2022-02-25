@@ -1,7 +1,9 @@
 #include <gui/parametres_screen/ParametresView.hpp>
 #include "main.h"
 
-extern UART_HandleTypeDef huart2;
+#define MAX_WIFIINFO_SIZE 34	// 32 for SSID, 1 byte for quality value and 1 byte for array terminator
+
+extern UART_HandleTypeDef huart1;
 
 ParametresView::ParametresView()
 {
@@ -12,40 +14,28 @@ void ParametresView::setupScreen()
 {
     //listWifi.setHeight(0); //Compensates for the list height that is set to 200 by the designer
 
-	// Scan wifi ap
-	char* cmd_scan = "SCAN:\n";
-	HAL_UART_Transmit(&huart2, (uint8_t *)cmd_scan, 7, 150);
+	// Send scan command to wifi module
+	const char* cmd_scan = "SCAN:\n";
+	HAL_UART_Transmit(&huart1, (uint8_t *)cmd_scan, 7, 150);
 
+	// Read scan results
+	uint8_t wifiInfo[MAX_WIFIINFO_SIZE];
+	const uint8_t qualityIndex = MAX_WIFIINFO_SIZE - 2;
 
-	// Read Scan results
-
-	/*
-	char wifiAP[30];
-
-	do{
-
-		if(HAL_UART_Receive(&huart2, (uint8_t *)wifi++, 1, 500) == HAL_UART_STATE_TIMEOUT)
+	for(uint8_t i = 0; i < sizeWifiList; i++)
+	{
+		while(HAL_UART_Receive(&huart1, (uint8_t *)wifiInfo, MAX_WIFIINFO_SIZE - 1, 500) != HAL_TIMEOUT)
 		{
-			break;
+			uint8_t qualityValue = wifiInfo[qualityIndex] - '0'; // convert char to int
+
+			if(qualityValue > '3' && qualityValue < '0')
+				break; // invalid quality value
+
+			wifiInfo[qualityIndex] = '\0';	// close array from this position to just read SSID
+			listElements[i].setupListElement((char*)wifiInfo, wifiSignal[qualityValue]);
+			listWifi.add(listElements[i]);
 		}
-
-
-	}while((*wifi) == ':');
-	*/
-
-
-    listElements[0].setupListElement("ensiasstudent", "good");
-    listElements[1].setupListElement("ensiasstudent", "good");
-    listElements[2].setupListElement("ensiasstudent", "good");
-    listElements[3].setupListElement("ensiasstudent", "good");
-    listElements[4].setupListElement("ensiasstudent", "good");
-    listElements[5].setupListElement("ensiasstudent", "good");
-    listElements[6].setupListElement("ensiasstudent", "good");
-
-    for (uint8_t i = 0; i < numberOfListElements; ++i)
-    {
-        listWifi.add(listElements[i]);
-    }
+	}
 }
 
 void ParametresView::tearDownScreen()

@@ -31,7 +31,7 @@ protected:
     /*
      * Wildcard Buffers
      */
-    static const uint16_t SSID_SIZE = 30;
+    static const uint16_t SSID_SIZE = 33;
     touchgfx::Unicode::UnicodeChar SSIDBuffer[SSID_SIZE];
     static const uint16_t STRENGTH_SIZE = 10;
     touchgfx::Unicode::UnicodeChar StrengthBuffer[STRENGTH_SIZE];

@@ -1088,7 +1088,7 @@
             "Wildcard1": {
               "TextId": "SingleUseId9",
               "UseBuffer": true,
-              "BufferSize": 30
+              "BufferSize": 33
             },
             "Name": "SSID",
             "X": 10,
@@ -1277,7 +1277,8 @@
     "LandscapeSkinY": 0,
     "PortraitSkinX": 0,
     "PortraitSkinY": 0,
-    "DisplayOrientation": "Portrait"
+    "DisplayOrientation": "Portrait",
+    "Family": "STM32F4"
   },
   "Version": "4.17.0",
   "CreatedBy": "4.17.0"

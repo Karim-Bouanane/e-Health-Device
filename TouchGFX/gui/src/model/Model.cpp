@@ -23,7 +23,7 @@ void Model::tick()
 		voltageMV = HAL_ADC_GetValue(&hadc1) * 0.7326 ; // VOUT = reading from ADC * (3000mV / 4096). ADC is 12 bits precision
 
 		modelListener->updateTemp(voltageMV / 10);
-		tickCounter =0;
+		tickCounter = 0;
 	}
 
 
